@@ -6,6 +6,7 @@ import { Suspense } from "react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import FileUpload from "@/components/FileUpload";
+import { Skeleton } from "./ui/skeleton";
 
 interface ChatSideBarProps {
   activeChatId: string;
@@ -15,7 +16,7 @@ export default function ChatSideBar({ activeChatId }: ChatSideBarProps) {
   return (
     <div className="max-w-xs flex-[3] overflow-auto bg-gray-900 p-4 text-gray-200">
       <FileUpload isButton />
-      <Suspense fallback={<>Loading...</>}>
+      <Suspense fallback={<ChatListSkeleton length={15} />}>
         <ChatList activeChatId={activeChatId} />
       </Suspense>
       <div className="absolute bottom-4 left-4">
@@ -52,6 +53,28 @@ function ChatList({ activeChatId }: ChatListProps) {
             </p>
           </div>
         </Link>
+      ))}
+    </div>
+  );
+}
+
+interface ChatListSkeletonProps {
+  length: number;
+}
+
+function ChatListSkeleton({ length }: ChatListSkeletonProps) {
+  return (
+    <div className="flex flex-col gap-2">
+      {Array.from({ length: length }).map((_, index) => (
+        <div
+          key={index}
+          className={cn(
+            "flex items-center rounded-lg bg-blue-600/10 p-3 text-slate-300",
+          )}
+        >
+          <MessageCircle className="mr-2 shrink-0" />
+          <Skeleton className="h-[10px] w-[80%]" />
+        </div>
       ))}
     </div>
   );
