@@ -1,81 +1,60 @@
 "use client";
-import { MessageCircle } from "lucide-react";
-import { useSuspenseQuery } from "@tanstack/react-query";
-import { getChats } from "@/actions/server/chat.server";
-import { Suspense } from "react";
-import Link from "next/link";
-import { cn } from "@/lib/utils";
+import { forwardRef, HTMLAttributes, Suspense } from "react";
 import FileUpload from "@/components/FileUpload";
-import { Skeleton } from "./ui/skeleton";
+import { Button } from "./ui/button";
+import { logOut } from "@/actions/server/auth.server";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
+import { ChatList } from "@/components/ClassList";
+import { ChatListSkeleton } from "@/components/skeletons/ChatListSkeleton";
+import { motion, HTMLMotionProps } from "framer-motion";
+import useStore from "@/store";
+import { cn } from "@/lib/utils";
 
-interface ChatSideBarProps {
-  activeChatId: string;
-}
+interface ChatSideBarProps extends HTMLMotionProps<"div"> {}
 
-export default function ChatSideBar({ activeChatId }: ChatSideBarProps) {
-  return (
-    <div className="max-w-xs flex-[3] overflow-auto bg-gray-900 p-4 text-gray-200">
-      <FileUpload isButton />
-      <Suspense fallback={<ChatListSkeleton length={15} />}>
-        <ChatList activeChatId={activeChatId} />
-      </Suspense>
-      <div className="absolute bottom-4 left-4">
-        <div className="flex flex-wrap items-center gap-2 text-sm text-slate-500">
-          <Link href="/">Home</Link>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-interface ChatListProps {
-  activeChatId: string;
-}
-
-function ChatList({ activeChatId }: ChatListProps) {
-  const { data: chats } = useSuspenseQuery({
-    queryKey: ["chats"],
-    queryFn: () => getChats(),
-  });
-  return (
-    <div className="flex flex-col gap-2">
-      {chats.map((chat) => (
-        <Link href={`/chats/${chat.id}`} key={chat.id}>
-          <div
-            className={cn("flex items-center rounded-lg p-3 text-slate-300", {
-              "bg-blue-600 text-white": activeChatId === chat.id.toString(),
-              "hover:text-white": !(activeChatId === chat.id.toString()),
-            })}
+const ChatSideBar = forwardRef<HTMLDivElement, ChatSideBarProps>(
+  ({ className, ...props }, ref) => {
+    const { chatsSidebarToggleState } = useStore();
+    const router = useRouter();
+    return (
+      <motion.div
+        {...props}
+        ref={ref}
+        animate={{ flexBasis: chatsSidebarToggleState ? "0%" : "30%" }}
+        className={cn(
+          "flex h-full max-w-xs basis-[30%] overflow-hidden bg-gray-900 text-gray-200 max-sm:max-w-none max-sm:flex-1",
+          className,
+        )}
+      >
+        <div className="flex h-full flex-col overflow-hidden p-4 max-sm:w-full">
+          <FileUpload isButton />
+          <Suspense fallback={<ChatListSkeleton length={15} />}>
+            <ChatList />
+          </Suspense>
+          <Button
+            className="overflow-hidden"
+            variant={"destructive"}
+            onClick={() => {
+              toast.promise(logOut({ redirectAfterLogout: false }), {
+                success: () => {
+                  router.push("/");
+                  return "Logged out";
+                },
+                loading: "Logging out...",
+                error: (error) => {
+                  return (error as Error).message;
+                },
+              });
+            }}
           >
-            <MessageCircle className="mr-2 shrink-0" />
-            <p className="w-full overflow-hidden truncate text-ellipsis whitespace-nowrap text-sm">
-              {chat.pdfName}
-            </p>
-          </div>
-        </Link>
-      ))}
-    </div>
-  );
-}
-
-interface ChatListSkeletonProps {
-  length: number;
-}
-
-function ChatListSkeleton({ length }: ChatListSkeletonProps) {
-  return (
-    <div className="flex flex-col gap-2">
-      {Array.from({ length: length }).map((_, index) => (
-        <div
-          key={index}
-          className={cn(
-            "flex items-center rounded-lg bg-blue-600/10 p-3 text-slate-300",
-          )}
-        >
-          <MessageCircle className="mr-2 shrink-0" />
-          <Skeleton className="h-[10px] w-[80%]" />
+            Logout
+          </Button>
         </div>
-      ))}
-    </div>
-  );
-}
+      </motion.div>
+    );
+  },
+);
+ChatSideBar.displayName = "ChatSideBar";
+
+export default ChatSideBar;

@@ -5,6 +5,7 @@ import { createClient } from "@/lib/supabase/server";
 import FileUpload from "@/components/FileUpload";
 import LoginForm from "@/components/LoginForm";
 import SignUpForm from "@/components/SignUpForm";
+import Link from "next/link";
 
 export default async function Home() {
   const supabase = createClient();
@@ -12,7 +13,7 @@ export default async function Home() {
   const { data, error } = await supabase.auth.getUser();
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-r from-rose-100 to-teal-100">
+    <main className="flex min-h-dvh flex-col items-center justify-center bg-gradient-to-r from-rose-100 to-teal-100">
       <div className="flex flex-col">
         <h1 className="mb-3 text-center text-5xl font-semibold">
           Chat with PDF
@@ -21,8 +22,17 @@ export default async function Home() {
           Join millions of students, researchers and professionals to instantly
           answer questions and understand research with AI
         </p>
+
         {data.user ? (
-          <FileUpload />
+          <>
+            <div className="mb-4 flex flex-col items-center justify-center gap-4">
+              <Link href="/chats">
+                <Button>Go to Chats</Button>
+              </Link>
+              <span>OR</span>
+            </div>
+            <FileUpload />
+          </>
         ) : (
           <Dialog>
             <DialogTrigger asChild className="mx-auto mt-4">

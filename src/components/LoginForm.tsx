@@ -33,7 +33,7 @@ export default function LoginForm({ disableLink }: LoginFormProps) {
     toast.promise(login(values), {
       loading: "Loading",
       success: (data) => {
-        router.push("/chats");
+        router.push("/");
         return "Success";
       },
       error: (error: Error) => {

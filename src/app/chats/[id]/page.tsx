@@ -1,10 +1,11 @@
 "use client";
-import ChatSideBar from "@/components/ChatSideBar";
 import PdfViewer from "@/components/PdfViewer";
 import { Suspense } from "react";
 import ChatComponent from "@/components/ChatComponent";
-import { Skeleton } from "@/components/ui/skeleton";
-import { SyncLoader } from "react-spinners";
+import { PageViewerSkeleton } from "@/components/skeletons/PageViewerSkeleton";
+import { ChatComponentSkeleton } from "@/components/skeletons/ChatComponentSkeleton";
+import ChatSideBar from "@/components/ChatSideBar";
+import useStore from "@/store";
 
 interface ChatPageProps {
   params: {
@@ -13,28 +14,24 @@ interface ChatPageProps {
 }
 
 export default function ChatPage({ params: { id } }: ChatPageProps) {
+  const { mobileToggles } = useStore();
   return (
     <>
-      <ChatSideBar activeChatId={id} />
+      {mobileToggles.chatsSidebar && (
+        <ChatSideBar className="hidden max-sm:flex" />
+      )}
       <Suspense fallback={<PageViewerSkeleton />}>
-        <PdfViewer activeChatId={id} />
+        <PdfViewer activeChatId={id} className="max-sm:hidden" />
+        {mobileToggles.pdfViewer && (
+          <PdfViewer activeChatId={id} className="hidden max-sm:flex" />
+        )}
       </Suspense>
-      <Suspense fallback={<>Chats Loading...</>}>
-        <ChatComponent activeChatId={id} />
+      <Suspense fallback={<ChatComponentSkeleton />}>
+        <ChatComponent activeChatId={id} className="max-sm:hidden" />
+        {mobileToggles.chat && (
+          <ChatComponent activeChatId={id} className="hidden max-sm:flex" />
+        )}
       </Suspense>
     </>
-  );
-}
-
-interface PageViewerSkeletonProps {}
-
-function PageViewerSkeleton({}: PageViewerSkeletonProps) {
-  return (
-    <div className="relative flex flex-[5] items-center justify-center">
-      <Skeleton className="h-full w-full bg-blue-600/10" />
-      <div className="absolute">
-        <SyncLoader color="#2563eb" />
-      </div>
-    </div>
   );
 }
