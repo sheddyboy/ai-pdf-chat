@@ -35,16 +35,21 @@ export async function getChats() {
   try {
     const supabase = createClient();
     const { data, error } = await supabase.auth.getUser();
-    if (error) {
-      throw new Error(error.message);
+    // if (error) {
+    //   throw new Error(error.message);
+    // }
+    if (data.user) {
+      return await db
+        .select()
+        .from(Chats)
+        .where(eq(Chats.userId, data.user.id))
+        .orderBy(desc(Chats.updatedAt));
+    } else {
+      return [];
     }
-    return await db
-      .select()
-      .from(Chats)
-      .where(eq(Chats.userId, data.user.id))
-      .orderBy(desc(Chats.updatedAt));
   } catch (error) {
-    throw new Error((error as Error).message);
+    return [];
+    // throw new Error((error as Error).message);
   }
 }
 export async function getChat(chatId: string) {
