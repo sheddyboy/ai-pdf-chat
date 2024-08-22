@@ -1,4 +1,3 @@
-"use client";
 import ChatSideBar from "@/components/ChatSideBar";
 
 interface ChatsPageProps {}

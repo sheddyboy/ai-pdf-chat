@@ -1,3 +1,4 @@
+"use client";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { getChats } from "@/actions/server/chat.server";
 import { MessageCircle } from "lucide-react";

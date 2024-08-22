@@ -7,7 +7,7 @@ import { SendHorizontal } from "lucide-react";
 
 interface ChatComponentSkeletonProps {}
 
-export async function ChatComponentSkeleton({}: ChatComponentSkeletonProps) {
+export function ChatComponentSkeleton({}: ChatComponentSkeletonProps) {
   return (
     <div className="flex flex-[3] flex-col gap-3 border-l-4 border-l-slate-200 p-2">
       <h1 className="text-xl font-bold">Chat</h1>
