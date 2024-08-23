@@ -65,7 +65,11 @@ export default function SignUpForm({ disableLink }: SignUpFormProps) {
               <FormItem>
                 <FormLabel>Password</FormLabel>
                 <FormControl>
-                  <Input {...field} type="password" className="text-base" />
+                  <Input
+                    {...field}
+                    type="password"
+                    className="text-base placeholder:text-base"
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
