@@ -121,7 +121,7 @@ const ChatComponent = forwardRef<HTMLDivElement, ChatComponentProps>(
               placeholder="Ask any question.."
               onChange={handleInputChange}
               value={input}
-              className="pr-[60px] placeholder:text-black/30"
+              className="pr-[60px] text-base placeholder:text-black/30"
             />
             <Button
               type="submit"

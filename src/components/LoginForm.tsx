@@ -68,7 +68,7 @@ export default function LoginForm({ disableLink }: LoginFormProps) {
               <FormItem>
                 <FormLabel>Password</FormLabel>
                 <FormControl>
-                  <Input {...field} type="password" />
+                  <Input {...field} type="password" className="text-base" />
                 </FormControl>
                 <FormMessage />
               </FormItem>
