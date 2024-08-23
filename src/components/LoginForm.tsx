@@ -77,9 +77,9 @@ export default function LoginForm({ disableLink }: LoginFormProps) {
           <Button type="submit" className="w-full">
             Login
           </Button>
-          <Button variant="outline" type="button" className="w-full">
+          {/* <Button variant="outline" type="button" className="w-full">
             Login with Google
-          </Button>
+          </Button> */}
         </div>
         {!disableLink && (
           <div className="mt-4 text-center text-sm">

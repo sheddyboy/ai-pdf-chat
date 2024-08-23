@@ -74,9 +74,9 @@ export default function SignUpForm({ disableLink }: SignUpFormProps) {
           <Button type="submit" className="w-full">
             SignUp
           </Button>
-          <Button variant="outline" type="button" className="w-full">
+          {/* <Button variant="outline" type="button" className="w-full">
             SignUp with Google
-          </Button>
+          </Button> */}
         </div>
         {!disableLink && (
           <div className="mt-4 text-center text-sm">
