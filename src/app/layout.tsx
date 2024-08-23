@@ -18,7 +18,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${inter.className} h-full overflow-hidden`}>
+      <body className={`${inter.className} h-dvh overflow-hidden`}>
         <ReactQueryProvider>{children}</ReactQueryProvider>
         <Toaster richColors />
       </body>

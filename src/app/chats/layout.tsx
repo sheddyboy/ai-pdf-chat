@@ -18,7 +18,7 @@ export default async function ChatsLayout({ children }: ChatsLayoutProps) {
   });
   return (
     <HydrationBoundary state={dehydrate(reactQueryClient)}>
-      <main className="flex h-screen">
+      <main className="flex h-dvh">
         <ChatSideBar className="max-sm:hidden" />
         {children}
       </main>
