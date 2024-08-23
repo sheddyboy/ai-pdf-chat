@@ -3,7 +3,7 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 import { getChats } from "@/actions/server/chat.server";
 import { ArrowLeftRight, Menu, PanelLeftDashed } from "lucide-react";
 import useStore from "@/store";
-import { forwardRef, HTMLAttributes } from "react";
+import { forwardRef, HTMLAttributes, useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 
 interface PdfViewerProps extends HTMLAttributes<HTMLDivElement> {
@@ -12,6 +12,7 @@ interface PdfViewerProps extends HTMLAttributes<HTMLDivElement> {
 
 const PdfViewer = forwardRef<HTMLDivElement, PdfViewerProps>(
   ({ activeChatId, className, ...props }, ref) => {
+    const [url, setUrl] = useState("");
     const {
       toggleChatsSidebar,
       mobileShowChatsSidebar,
@@ -29,9 +30,19 @@ const PdfViewer = forwardRef<HTMLDivElement, PdfViewerProps>(
       (chat) => chat.id.toString() === activeChatId,
     );
 
-    const activeChatUrl = activeChat?.pdfUrl
-      ? `https://docs.google.com/gview?url=${activeChat.pdfUrl}&embedded=true`
-      : "";
+    useEffect(() => {
+      const isMobileDevice = /Mobi|Android/i.test(navigator.userAgent);
+      if (isMobileDevice) {
+        setUrl(
+          activeChat?.pdfUrl
+            ? `https://docs.google.com/gview?url=${activeChat.pdfUrl}&embedded=true`
+            : "",
+        );
+      } else {
+        setUrl(activeChat?.pdfUrl ? activeChat.pdfUrl : "");
+      }
+    }, []);
+
     return (
       <div
         {...props}
@@ -66,7 +77,7 @@ const PdfViewer = forwardRef<HTMLDivElement, PdfViewerProps>(
           />
         </div>
         <iframe
-          src={activeChatUrl}
+          src={url}
           className="h-full w-full flex-1 rounded-lg shadow-md"
         ></iframe>
       </div>
