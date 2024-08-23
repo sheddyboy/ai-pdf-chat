@@ -27,7 +27,7 @@ const ChatSideBar = forwardRef<HTMLDivElement, ChatSideBarProps>(
           className,
         )}
       >
-        <div className="flex h-full w-full flex-col overflow-hidden p-4">
+        <div className="flex h-full w-full flex-col gap-2 overflow-hidden p-4">
           <FileUpload isButton />
           <Suspense fallback={<ChatListSkeleton length={15} />}>
             <ChatList />
