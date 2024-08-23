@@ -25,7 +25,7 @@ export async function downloadFile(filePath: string) {
     const arrayBuffer = await fileData.arrayBuffer();
     const buffer = Buffer.from(arrayBuffer);
 
-    const outputPath = path.join("tmp", `pdf-${Date.now()}.pdf`);
+    const outputPath = path.join("/tmp", `pdf-${Date.now()}.pdf`);
     const file = fs.createWriteStream(outputPath);
     file.write(buffer);
     file.end();
