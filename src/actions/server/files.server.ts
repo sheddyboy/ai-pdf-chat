@@ -26,9 +26,19 @@ export async function downloadFile(filePath: string) {
     const buffer = Buffer.from(arrayBuffer);
 
     const outputPath = path.join("tmp", `pdf-${Date.now()}.pdf`);
-    fs.writeFileSync(outputPath, buffer);
+    const file = fs.createWriteStream(outputPath);
+    file.write(buffer);
+    file.end();
 
-    return outputPath;
+    return new Promise<string>((resolve, reject) => {
+      file.on("finish", () => {
+        resolve(outputPath);
+      });
+
+      file.on("error", (err) => {
+        reject(new Error(`File write failed: ${err.message}`));
+      });
+    });
   } catch (error) {
     throw new Error((error as Error).message);
   }
