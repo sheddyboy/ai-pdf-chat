@@ -25,9 +25,7 @@ export const Profiles = pgTable("profiles", {
   name: text("name"),
   profilePicture: text("profile_picture"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
-  updatedAt: timestamp("updated_at")
-    .notNull()
-    .$onUpdate(() => new Date()),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
 
 export const ProfilesRelation = relations(Profiles, ({ one, many }) => ({

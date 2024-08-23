@@ -1,6 +1,6 @@
 {
-  "id": "ef9b2037-5513-42ab-b911-9492f454c327",
-  "prevId": "00000000-0000-0000-0000-000000000000",
+  "id": "461d5a12-2ea1-4d6c-8580-811cd11bbf0e",
+  "prevId": "ef9b2037-5513-42ab-b911-9492f454c327",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -58,15 +58,15 @@
         "chats_user_id_profiles_id_fk": {
           "name": "chats_user_id_profiles_id_fk",
           "tableFrom": "chats",
-          "tableTo": "profiles",
           "columnsFrom": [
             "user_id"
           ],
+          "tableTo": "profiles",
           "columnsTo": [
             "id"
           ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "cascade"
         }
       },
       "compositePrimaryKeys": {},
@@ -121,15 +121,15 @@
         "messages_chat_id_chats_id_fk": {
           "name": "messages_chat_id_chats_id_fk",
           "tableFrom": "messages",
-          "tableTo": "chats",
           "columnsFrom": [
             "chat_id"
           ],
+          "tableTo": "chats",
           "columnsTo": [
             "id"
           ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "cascade"
         }
       },
       "compositePrimaryKeys": {},
@@ -177,16 +177,16 @@
         "profiles_id_users_id_fk": {
           "name": "profiles_id_users_id_fk",
           "tableFrom": "profiles",
-          "tableTo": "users",
-          "schemaTo": "auth",
           "columnsFrom": [
             "id"
           ],
+          "tableTo": "users",
+          "schemaTo": "auth",
           "columnsTo": [
             "id"
           ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
+          "onUpdate": "no action",
+          "onDelete": "cascade"
         }
       },
       "compositePrimaryKeys": {},

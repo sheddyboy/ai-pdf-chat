@@ -28,7 +28,7 @@ CREATE TABLE IF NOT EXISTS "profiles" (
 	"name" text,
 	"profile_picture" text,
 	"created_at" timestamp DEFAULT now() NOT NULL,
-	"updated_at" timestamp NOT NULL
+	"updated_at" timestamp DEFAULT now() NOT NULL
 );
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "auth"."users" (
