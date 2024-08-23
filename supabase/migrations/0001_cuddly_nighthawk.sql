@@ -25,12 +25,22 @@ CREATE POLICY "Give images access to own folder 1ufimg_2" ON storage.objects FOR
 CREATE POLICY "Give images access to own folder 1ufimg_3" ON storage.objects FOR DELETE TO public USING (bucket_id = 'images' AND auth.uid()::text = (storage.foldername(name))[1]);
 
 
--- Enable MODDATETIME extension
-create extension if not exists moddatetime schema extensions;
+CREATE
+OR REPLACE FUNCTION updated_at_func () RETURNS TRIGGER AS $$
+BEGIN
+   NEW.updated_at = now(); 
+   RETURN NEW;
+END;
+$$ language 'plpgsql';
 
-create trigger profiles_handle_updated_at before update on profiles
-  for each row execute procedure moddatetime (updated_at);
-create trigger chats_handle_updated_at before update on chats
-  for each row execute procedure moddatetime (updated_at);
-create trigger messages_handle_updated_at before update on messages
-  for each row execute procedure moddatetime (updated_at);
+CREATE TRIGGER profiles_updated_at_trigger BEFORE
+UPDATE ON profiles FOR EACH ROW
+EXECUTE PROCEDURE updated_at_func ();
+
+CREATE TRIGGER chats_updated_at_trigger BEFORE
+UPDATE ON chats FOR EACH ROW
+EXECUTE PROCEDURE updated_at_func ();
+
+CREATE TRIGGER messages_updated_at_trigger BEFORE
+UPDATE ON messages FOR EACH ROW
+EXECUTE PROCEDURE updated_at_func ();
