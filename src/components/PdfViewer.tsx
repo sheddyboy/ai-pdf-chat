@@ -41,7 +41,7 @@ const PdfViewer = forwardRef<HTMLDivElement, PdfViewerProps>(
       } else {
         setUrl(activeChat?.pdfUrl ? activeChat.pdfUrl : "");
       }
-    }, []);
+    }, [activeChat?.pdfUrl]);
 
     return (
       <div

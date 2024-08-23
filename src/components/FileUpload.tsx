@@ -25,12 +25,12 @@ export default function FileUpload({ isButton }: FileUploadProps) {
         if (acceptedFiles.length > 0) {
           setLoading(true);
           toast.promise(uploadFileAndCreateChat(acceptedFiles[0]), {
-            success: ({ data, error }) => {
+            success: async ({ data, error }) => {
               if (error !== null) {
                 throw new Error(error);
               }
               const url = `/chats/${data.id}`;
-              reactQuery.invalidateQueries({ queryKey: ["chats"] });
+              await reactQuery.invalidateQueries({ queryKey: ["chats"] });
               router.push(url);
               return "Uploaded";
             },
