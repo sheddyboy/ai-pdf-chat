@@ -15,7 +15,7 @@ interface StoreType {
 
 const useStore = create<StoreType>((set) => ({
   chatsSidebarToggleState: false,
-  mobileToggles: { chat: true, chatsSidebar: false, pdfViewer: false },
+  mobileToggles: { chat: false, chatsSidebar: true, pdfViewer: false },
   mobileShowChatsSidebar: () =>
     set((state) => ({
       mobileToggles: { chat: false, chatsSidebar: true, pdfViewer: false },

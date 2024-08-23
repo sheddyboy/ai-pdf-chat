@@ -6,14 +6,17 @@ import { getChat } from "@/actions/server/chat.server";
 
 export async function getMessages(chatId: string) {
   try {
-    const chat = await getChat(chatId);
+    const { data: chat, error } = await getChat(chatId);
+    if (error !== null) {
+      return { data: null, error };
+    }
     const messages = await db.query.Messages.findMany({
       where: eq(Messages.chatId, +chatId),
     });
-    return { messages, chat };
+    return { data: { messages, chat }, error: null };
   } catch (error) {
     console.log("getMessagesError");
-    throw new Error((error as Error).message);
+    return { data: null, error: new Error((error as Error).message).message };
   }
 }
 
@@ -36,8 +39,8 @@ export async function createMessage({
       })
       .returning();
 
-    return message;
+    return { data: message, error: null };
   } catch (error) {
-    throw new Error((error as Error).message);
+    return { data: null, error: new Error((error as Error).message).message };
   }
 }

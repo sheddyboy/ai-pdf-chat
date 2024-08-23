@@ -10,7 +10,7 @@ import { loginFormSchema, signUpFormSchema } from "@/schemas";
 export async function login(values: z.infer<typeof loginFormSchema>) {
   const result = loginFormSchema.safeParse(values);
   if (result.error) {
-    throw new Error(result.error.message);
+    return { data: null, error: result.error.message };
   }
 
   const supabase = createClient();
@@ -21,16 +21,16 @@ export async function login(values: z.infer<typeof loginFormSchema>) {
   });
 
   if (error) {
-    throw new Error(error.message);
+    return { data: null, error: error.message };
   }
   revalidatePath("/", "layout");
-  return data;
+  return { data, error: null };
 }
 
 export async function signUp(values: z.infer<typeof signUpFormSchema>) {
   const result = signUpFormSchema.safeParse(values);
   if (result.error) {
-    throw new Error(JSON.stringify(result.error));
+    return { data: null, error: result.error.message };
   }
   const supabase = createClient();
 
@@ -40,10 +40,10 @@ export async function signUp(values: z.infer<typeof signUpFormSchema>) {
   });
 
   if (error) {
-    throw new Error(error.message);
+    return { data: null, error: error.message };
   }
   revalidatePath("/", "layout");
-  return data;
+  return { data, error: null };
 }
 
 export async function logOut({
@@ -53,14 +53,16 @@ export async function logOut({
 }) {
   const supabase = createClient();
 
-  try {
-    const { error } = await supabase.auth.signOut();
+  const { error } = await supabase.auth.signOut();
 
-    if (error) throw new Error(error.message);
+  if (error) {
+    return { data: null, error: error.message };
+  }
 
-    revalidatePath("/", "layout");
-    redirectAfterLogout && redirect("/");
-  } catch (error) {
-    throw new Error((error as Error).message);
+  revalidatePath("/", "layout");
+  if (redirectAfterLogout) {
+    redirect("/");
+  } else {
+    return { data: "Logged Out", error: null };
   }
 }

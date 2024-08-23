@@ -10,7 +10,7 @@ export async function downloadFile(filePath: string) {
   const supabase = createClient();
   const { data: userData, error: userError } = await supabase.auth.getUser();
   if (userError) {
-    throw new Error(userError.message);
+    return { data: null, error: userError.message };
   }
 
   const { data: fileData, error: fileError } = await supabase.storage
@@ -18,7 +18,7 @@ export async function downloadFile(filePath: string) {
     .download(filePath);
 
   if (fileError) {
-    throw new Error(fileError.message);
+    return { data: null, error: fileError.message };
   }
 
   try {
@@ -30,7 +30,7 @@ export async function downloadFile(filePath: string) {
     file.write(buffer);
     file.end();
 
-    return new Promise<string>((resolve, reject) => {
+    const data = await new Promise<string>((resolve, reject) => {
       file.on("finish", () => {
         resolve(outputPath);
       });
@@ -39,15 +39,22 @@ export async function downloadFile(filePath: string) {
         reject(new Error(`File write failed: ${err.message}`));
       });
     });
+    return { data, error: null };
   } catch (error) {
-    throw new Error((error as Error).message);
+    return { data: null, error: new Error((error as Error).message).message };
   }
 }
 
 export async function loadPdfFileToPinecone(filePath: string) {
   try {
     // download pdf
-    const fileName = await downloadFile(filePath);
+    const { data: fileName, error } = await downloadFile(filePath);
+    if (error !== null) {
+      return {
+        data: null,
+        error,
+      };
+    }
     // split pdf into pages
     const loader = new PDFLoader(fileName);
     const pages = (await loader.load()) as unknown as LangChainDocument[];
@@ -59,8 +66,8 @@ export async function loadPdfFileToPinecone(filePath: string) {
     const pineconeIndex = pc.Index("chat-with-pdf");
     const namespace = pineconeIndex.namespace(filePath);
     await namespace.upsert(vectors);
-    return "Loaded to pinecone";
+    return { data: "Loaded to pinecone", error: null };
   } catch (error) {
-    throw new Error((error as Error).message);
+    return { data: null, error: new Error((error as Error).message).message };
   }
 }

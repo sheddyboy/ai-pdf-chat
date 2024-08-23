@@ -18,15 +18,17 @@ const PdfViewer = forwardRef<HTMLDivElement, PdfViewerProps>(
       mobileToggleChatAndPdfViewer,
     } = useStore();
 
-    const { data: chats } = useSuspenseQuery({
+    const {
+      data: { data: chats, error },
+    } = useSuspenseQuery({
       queryKey: ["chats"],
       queryFn: () => getChats(),
     });
 
-    const activeChat = chats.find(
+    const activeChat = chats?.find(
       (chat) => chat.id.toString() === activeChatId,
     );
-    // const activeChatUrl = activeChat?.pdfUrl ?? "";
+
     const activeChatUrl = activeChat?.pdfUrl
       ? `https://docs.google.com/gview?url=${activeChat.pdfUrl}&embedded=true`
       : "";
@@ -52,7 +54,10 @@ const PdfViewer = forwardRef<HTMLDivElement, PdfViewerProps>(
             }}
             className="hidden shrink-0 cursor-pointer max-sm:flex"
           />
-          <p className="truncate font-bold">{activeChat?.pdfName}</p>
+          <p className="truncate font-bold">
+            <span className="max-sm:inline">PDF View: </span>
+            {activeChat?.pdfName}
+          </p>
           <ArrowLeftRight
             className="ml-auto hidden shrink-0 max-sm:flex"
             onClick={() => {

@@ -32,7 +32,10 @@ export default function LoginForm({ disableLink }: LoginFormProps) {
   const handleSubmit = async (values: z.infer<typeof loginFormSchema>) => {
     toast.promise(login(values), {
       loading: "Loading",
-      success: (data) => {
+      success: ({ data, error }) => {
+        if (error !== null) {
+          throw new Error(error);
+        }
         router.push("/");
         return "Success";
       },

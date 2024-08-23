@@ -30,7 +30,10 @@ export default function SignUpForm({ disableLink }: SignUpFormProps) {
   const handleSubmit = async (values: z.infer<typeof signUpFormSchema>) => {
     toast.promise(signUp(values), {
       loading: "Loading",
-      success: (data) => {
+      success: ({ data, error }) => {
+        if (error !== null) {
+          throw new Error(error);
+        }
         return "Success";
       },
       error: (error: Error) => {

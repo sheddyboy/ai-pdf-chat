@@ -17,22 +17,27 @@ const ChatComponent = forwardRef<HTMLDivElement, ChatComponentProps>(
   ({ activeChatId, className, ...props }, ref) => {
     const { mobileShowChatsSidebar, mobileToggleChatAndPdfViewer } = useStore();
     const messagesContainerRef = useRef<HTMLDivElement>(null);
-    const { data: messagesData } = useSuspenseQuery({
+    const {
+      data: { data: messagesData, error: messagesError },
+    } = useSuspenseQuery({
       queryKey: ["messages", activeChatId],
       queryFn: () => getMessages(activeChatId),
     });
+
     const { handleInputChange, handleSubmit, messages, isLoading, input } =
       useChat({
         api: "/api/chat",
         body: {
-          pineconeNamespace: messagesData.chat.pineconeNamespace,
+          pineconeNamespace: messagesData?.chat.pineconeNamespace,
           chatId: activeChatId,
         },
-        initialMessages: messagesData.messages.map(({ role, content, id }) => ({
-          content,
-          role,
-          id: id.toString(),
-        })),
+        initialMessages: messagesData?.messages.map(
+          ({ role, content, id }) => ({
+            content,
+            role,
+            id: id.toString(),
+          }),
+        ),
       });
 
     useEffect(() => {
@@ -72,7 +77,8 @@ const ChatComponent = forwardRef<HTMLDivElement, ChatComponentProps>(
           />
           <h1 className="text-xl font-bold max-sm:hidden">Chat</h1>
           <p className="hidden truncate font-bold max-sm:block">
-            {messagesData.chat.pdfName}
+            <span className="max-sm:inline">Chat View: </span>
+            {messagesData?.chat.pdfName}
           </p>
 
           <ArrowLeftRight

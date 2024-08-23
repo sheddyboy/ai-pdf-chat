@@ -25,39 +25,39 @@ export async function createChat({
         pineconeNamespace,
       })
       .returning();
-    return data;
+    return { data, error: null };
   } catch (error) {
-    throw new Error((error as Error).message);
+    return { data: null, error: new Error((error as Error).message).message };
   }
 }
 
 export async function getChats() {
   try {
     const supabase = createClient();
-    const { data, error } = await supabase.auth.getUser();
-    // if (error) {
-    //   throw new Error(error.message);
-    // }
-    if (data.user) {
-      return await db
-        .select()
-        .from(Chats)
-        .where(eq(Chats.userId, data.user.id))
-        .orderBy(desc(Chats.updatedAt));
-    } else {
-      return [];
+    const { data: userData, error } = await supabase.auth.getUser();
+    if (error) {
+      return { data: null, error: error.message };
     }
+
+    const data = await db
+      .select()
+      .from(Chats)
+      .where(eq(Chats.userId, userData.user.id))
+      .orderBy(desc(Chats.updatedAt));
+
+    return { data, error: null };
   } catch (error) {
-    return [];
-    // throw new Error((error as Error).message);
+    return { data: null, error: new Error((error as Error).message).message };
   }
 }
 export async function getChat(chatId: string) {
   try {
     const [chat] = await db.select().from(Chats).where(eq(Chats.id, +chatId));
-    if (!chat) throw new Error("No chat found");
-    return chat;
+    if (!chat) {
+      return { data: null, error: "No Chat found" };
+    }
+    return { data: chat, error: null };
   } catch (error) {
-    throw new Error((error as Error).message);
+    return { data: null, error: new Error((error as Error).message).message };
   }
 }

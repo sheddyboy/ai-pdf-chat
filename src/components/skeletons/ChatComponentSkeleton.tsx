@@ -1,15 +1,25 @@
 import { Skeleton } from "@/components/ui/skeleton";
-import { SyncLoader } from "react-spinners";
 import { cn } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { SendHorizontal } from "lucide-react";
+import { forwardRef, HTMLAttributes } from "react";
 
-interface ChatComponentSkeletonProps {}
+interface ChatComponentSkeletonProps extends HTMLAttributes<HTMLDivElement> {}
 
-export function ChatComponentSkeleton({}: ChatComponentSkeletonProps) {
+const ChatComponentSkeleton = forwardRef<
+  HTMLDivElement,
+  ChatComponentSkeletonProps
+>(({ className, ...props }, ref) => {
   return (
-    <div className="flex flex-[3] flex-col gap-3 border-l-4 border-l-slate-200 p-2">
+    <div
+      ref={ref}
+      {...props}
+      className={cn(
+        "flex flex-[3] flex-col gap-3 border-l-4 border-l-slate-200 p-2",
+        className,
+      )}
+    >
       <h1 className="text-xl font-bold">Chat</h1>
       <div className="flex flex-1 flex-col gap-2 overflow-auto px-4 pb-4">
         {Array.from({ length: 10 }).map((_, index) => (
@@ -49,4 +59,8 @@ export function ChatComponentSkeleton({}: ChatComponentSkeletonProps) {
       </div>
     </div>
   );
-}
+});
+
+ChatComponentSkeleton.displayName = "ChatComponentSkeleton";
+
+export default ChatComponentSkeleton;

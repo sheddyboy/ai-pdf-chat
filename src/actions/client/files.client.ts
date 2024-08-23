@@ -5,18 +5,34 @@ import { createChat } from "@/actions/server/chat.server";
 
 export async function uploadFileAndCreateChat(file: File) {
   try {
-    const { path, publicUrl, userId, fileName } = await uploadFile(file);
-    await loadPdfFileToPinecone(path);
-    const data = await createChat({
+    const { data: uploadFileData, error: uploadFileError } =
+      await uploadFile(file);
+
+    if (uploadFileError !== null) {
+      return { data: null, error: uploadFileError };
+    }
+    const { path, publicUrl, userId, fileName } = uploadFileData;
+    const {
+      data: loadPdfFileToPineconeData,
+      error: loadPdfFileToPineconeError,
+    } = await loadPdfFileToPinecone(path);
+
+    if (loadPdfFileToPineconeError !== null) {
+      return { data: null, error: loadPdfFileToPineconeError };
+    }
+    const { data, error } = await createChat({
       userId,
       pdfUrl: publicUrl,
       pdfName: fileName,
       pineconeNamespace: path,
     });
 
-    return data;
+    if (error !== null) {
+      return { data: null, error };
+    }
+    return { data, error: null };
   } catch (error) {
-    throw new Error((error as Error).message);
+    return { data: null, error: new Error((error as Error).message).message };
   }
 }
 
@@ -25,7 +41,7 @@ export async function uploadFile(file: File) {
   const { data: userData, error: userError } = await supabase.auth.getUser();
 
   if (userError) {
-    throw new Error(userError.message);
+    return { data: null, error: userError.message };
   }
 
   const { data: uploadData, error: uploadError } = await supabase.storage
@@ -36,16 +52,19 @@ export async function uploadFile(file: File) {
     );
 
   if (uploadError) {
-    throw new Error(uploadError.message);
+    return { data: null, error: uploadError.message };
   }
   const {
     data: { publicUrl },
   } = supabase.storage.from("images").getPublicUrl(uploadData.path);
 
   return {
-    ...uploadData,
-    publicUrl,
-    userId: userData.user.id,
-    fileName: file.name,
+    data: {
+      ...uploadData,
+      publicUrl,
+      userId: userData.user.id,
+      fileName: file.name,
+    },
+    error: null,
   };
 }

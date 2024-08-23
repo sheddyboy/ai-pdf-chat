@@ -16,7 +16,9 @@ export function ChatList({}: ChatListProps) {
   const chatWrapperRef = useRef<HTMLDivElement>(null);
   const activeChatRef = useRef<HTMLAnchorElement>(null);
   const chatId = path.split("/")[2];
-  const { data: chats } = useSuspenseQuery({
+  const {
+    data: { data: chats, error },
+  } = useSuspenseQuery({
     queryKey: ["chats"],
     queryFn: () => getChats(),
   });
@@ -39,7 +41,7 @@ export function ChatList({}: ChatListProps) {
       ref={chatWrapperRef}
       className="mb-4 flex flex-1 flex-col gap-2 overflow-auto"
     >
-      {chats.map((chat) => (
+      {chats?.map((chat) => (
         <Link
           onClick={() => {
             mobileHideChatsSidebar();

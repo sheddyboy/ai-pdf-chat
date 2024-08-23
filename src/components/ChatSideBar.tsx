@@ -1,5 +1,5 @@
 "use client";
-import { forwardRef, HTMLAttributes, Suspense } from "react";
+import { forwardRef, Suspense } from "react";
 import FileUpload from "@/components/FileUpload";
 import { Button } from "./ui/button";
 import { logOut } from "@/actions/server/auth.server";
