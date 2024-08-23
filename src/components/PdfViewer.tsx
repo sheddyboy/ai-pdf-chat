@@ -26,7 +26,10 @@ const PdfViewer = forwardRef<HTMLDivElement, PdfViewerProps>(
     const activeChat = chats.find(
       (chat) => chat.id.toString() === activeChatId,
     );
-    const activeChatUrl = activeChat?.pdfUrl ?? "";
+    // const activeChatUrl = activeChat?.pdfUrl ?? "";
+    const activeChatUrl = activeChat?.pdfUrl
+      ? `https://docs.google.com/gview?url=${activeChat.pdfUrl}&embedded=true`
+      : "";
     return (
       <div
         {...props}
