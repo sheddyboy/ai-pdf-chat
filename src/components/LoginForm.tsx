@@ -55,7 +55,11 @@ export default function LoginForm({ disableLink }: LoginFormProps) {
               <FormItem>
                 <FormLabel>Email</FormLabel>
                 <FormControl>
-                  <Input {...field} placeholder="m@example.com" />
+                  <Input
+                    {...field}
+                    placeholder="m@example.com"
+                    className="text-base placeholder:text-base"
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
