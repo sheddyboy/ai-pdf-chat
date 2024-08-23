@@ -12,7 +12,7 @@ const PageViewerSkeleton = forwardRef<HTMLDivElement, PageViewerSkeletonProps>(
         ref={ref}
         {...props}
         className={cn(
-          "relative flex flex-[5] items-center justify-center",
+          "relative flex flex-1 basis-[40%] items-center justify-center",
           className,
         )}
       >

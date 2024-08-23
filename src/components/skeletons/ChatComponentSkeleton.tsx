@@ -16,7 +16,7 @@ const ChatComponentSkeleton = forwardRef<
       ref={ref}
       {...props}
       className={cn(
-        "flex flex-[3] flex-col gap-3 border-l-4 border-l-slate-200 p-2",
+        "flex flex-1 basis-[30%] flex-col gap-3 border-l-4 border-l-slate-200 p-2",
         className,
       )}
     >
